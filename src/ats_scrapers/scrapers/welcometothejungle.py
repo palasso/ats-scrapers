@@ -192,7 +192,8 @@ class WTTJScraper(BaseScraper):
     def _parse_hit(self, hit: dict[str, Any]) -> Job:
         org = hit.get("organization") or {}
         org_name = org.get("name") if isinstance(org, dict) else str(org)
-        org_slug = (org.get("slug") or self.company_slug) if isinstance(org, dict) else self.company_slug
+        fallback_slug = self.company_slug if self.company_slug not in ("*", "all", "") else ""
+        org_slug = (org.get("slug") or fallback_slug) if isinstance(org, dict) else fallback_slug
 
         offices = hit.get("offices") or []
         first_office = offices[0] if offices and isinstance(offices[0], dict) else {}
